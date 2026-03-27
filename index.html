@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alambique Express - Sistema de Reserva Premium</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gold: #D4AF37; /* Ouro mais próximo da imagem */
+            --bg-dark: #0D0D0D;
+            --accent-green: #248B28; /* Verde do botão Pix na imagem */
+            --dark-gold: #8C6A1B;
+        }
+        body {
+            background-color: var(--bg-dark);
+            color: #FFFFFF;
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+        }
+        h1, h2, h3 {
+            font-family: 'Montserrat', sans-serif;
+        }
+        .text-amber { color: var(--primary-gold); }
+        .bg-amber { background-color: var(--primary-gold); }
+        .border-amber { border-color: var(--primary-gold); }
+        
+        .btn-gold {
+            background: linear-gradient(to bottom, #E8C158, #8C6A1B);
+            color: black;
+            text-shadow: 0 1px 1px rgba(255,255,255,0.3);
+            border: 1px solid #B58B2A;
+        }
+        
+        .btn-pix {
+            background: linear-gradient(to bottom, #2ECC71, #248B28);
+            color: white;
+            border: 1px solid #1E7021;
+        }
+
+        .premium-card {
+            background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            transition: all 0.3s ease;
+        }
+        .premium-card:hover {
+            border-color: var(--primary-gold);
+            transform: translateY(-5px);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .btn-hover:hover {
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
+            filter: brightness(1.1);
+        }
+        .img-mask {
+            mask-image: linear-gradient(to right, black 80%, transparent 100%);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Logo -->
+    <header class="py-6 px-4 md:px-12 flex justify-between items-center border-b border-white/5 sticky top-0 bg-[#0D0D0D]/90 backdrop-blur-md z-50">
+        <div class="flex items-center gap-2">
+            <!-- Ícone de Campainha/Sininho inspirado na logo -->
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="var(--primary-gold)">
+                <path d="M12 2C10.3 2 9 3.3 9 5V6.1C6.7 7.1 5 9.3 5 12V17L3 19V20H21V19L19 17V12C19 9.3 17.3 7.1 15 6.1V5C15 3.3 13.7 2 12 2ZM12 22C13.1 22 14 21.1 14 20H10C10 21.1 10.9 22 12 22Z"/>
+            </svg>
+            <span class="font-extrabold text-xl tracking-widest uppercase">Alambique<span class="text-amber">Express</span></span>
+        </div>
+        <div class="hidden md:block">
+            <span class="text-[10px] uppercase tracking-[0.3em] text-white/40">Reserva • Pagamento • Retirada</span>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-[80vh] flex items-center pt-12 pb-24 px-4 overflow-hidden">
+        <div class="absolute -top-24 -right-24 w-[500px] h-[500px] bg-amber/10 rounded-full blur-[120px]"></div>
+        
+        <div class="max-w-7xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center relative z-10">
+            <div class="text-center md:text-left">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-8">
+                    <span class="w-2 h-2 rounded-full bg-amber animate-pulse"></span>
+                    <span class="text-xs uppercase tracking-widest text-amber font-semibold">O sistema oficial Alambique Express</span>
+                </div>
+                <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
+                    Reserve, pague e <br>
+                    <span class="text-amber">só passe pra pegar.</span>
+                </h1>
+                <p class="text-lg md:text-xl text-white/70 mb-10 max-w-xl">
+                    Sem fila. Sem espera. Seu pedido pronto na hora. O cliente paga via Pix e só retira a bebida gelada.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                    <button class="btn-gold text-black font-bold px-10 py-5 rounded-lg text-lg btn-hover transition-all uppercase tracking-tighter">
+                        Peça agora o seu sistema
+                    </button>
+                    <div class="flex items-center gap-3 px-6 py-4 rounded-lg border border-white/10 glass-effect">
+                        <span class="text-white/60 text-sm">Elimine o gargalo hoje</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Imagem Estratégica Baseada no Anexo -->
+            <div class="relative group">
+                <div class="absolute inset-0 bg-amber/20 blur-3xl rounded-full scale-75 group-hover:scale-90 transition-transform duration-700"></div>
+                <img src="1.png" 
+                     alt="Alambique Express App View" 
+                     class="relative z-10 rounded-2xl border border-white/10 shadow-2xl shadow-black/50 w-full max-w-[500px] mx-auto transform -rotate-2 hover:rotate-0 transition-all duration-500">
+                
+                <!-- Floating Badge -->
+                <div class="absolute -bottom-6 -right-4 md:right-0 bg-amber p-4 rounded-xl shadow-xl z-20 animate-bounce">
+                    <p class="text-black text-xs font-black uppercase text-center">Pedido<br>Confirmado!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="py-20 px-4 bg-white/[0.02]">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="order-2 md:order-1">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-8">Hoje você <span class="text-red-500">perde vendas</span> porque:</h2>
+                    <ul class="space-y-6">
+                        <li class="flex gap-4 items-start">
+                            <div class="p-2 bg-red-500/10 rounded">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg">Cliente desiste de esperar</h4>
+                                <p class="text-white/60 text-sm">A paciência do cliente premium é curta. Se o WhatsApp demora, ele compra em outro lugar.</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-4 items-start">
+                            <div class="p-2 bg-red-500/10 rounded">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg">Atendimento demora</h4>
+                                <p class="text-white/60 text-sm">Sua equipe fica presa em áudios e textos enquanto o balcão está cheio.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="order-1 md:order-2">
+                    <div class="premium-card p-8 rounded-2xl relative z-10 border-amber/40">
+                        <div class="flex items-center justify-between mb-8">
+                            <h3 class="text-xl font-bold">A Solução Express</h3>
+                            <div class="px-3 py-1 bg-green-500/20 text-green-400 text-[10px] rounded-full font-bold uppercase tracking-widest border border-green-500/30">Pago via Pix</div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
+                                <span class="text-sm">Whisky Johnnie Walker</span>
+                                <span class="font-bold text-amber">R$ 120,00</span>
+                            </div>
+                            <div class="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
+                                <span class="text-sm">Cerveja Artesanal</span>
+                                <span class="font-bold text-amber">R$ 25,00</span>
+                            </div>
+                            <button class="w-full py-4 rounded-xl btn-pix font-bold flex items-center justify-center gap-2">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12,2L4.5,20.29L5.21,21L12,18L18.79,21L19.5,20.29L12,2Z"/></svg>
+                                Pagar com Pix
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Grid -->
+    <section class="py-24 px-4">
+        <div class="max-w-6xl mx-auto text-center mb-16">
+            <h2 class="text-3xl md:text-5xl font-bold mb-6">Benefícios <span class="text-amber">Diretos</span></h2>
+            <p class="text-white/50">Transforme sua operação em um relógio suíço.</p>
+        </div>
+        
+        <div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="premium-card p-8 rounded-xl text-left">
+                <div class="w-12 h-12 bg-amber/10 border border-amber/20 rounded-lg flex items-center justify-center mb-6">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary-gold)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                </div>
+                <h4 class="font-bold text-lg mb-2 text-amber">Menos gente no telefone</h4>
+                <p class="text-sm text-white/60 leading-relaxed">Libere sua equipe para vender mais no balcão e gerenciar o estoque.</p>
+            </div>
+            
+            <div class="premium-card p-8 rounded-xl text-left">
+                <div class="w-12 h-12 bg-amber/10 border border-amber/20 rounded-lg flex items-center justify-center mb-6">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary-gold)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                </div>
+                <h4 class="font-bold text-lg mb-2 text-amber">Mais pedidos/min</h4>
+                <p class="text-sm text-white/60 leading-relaxed">O sistema processa 30, 50, 100 pedidos simultâneos sem cansar.</p>
+            </div>
+            
+            <div class="premium-card p-8 rounded-xl text-left">
+                <div class="w-12 h-12 bg-amber/10 border border-amber/20 rounded-lg flex items-center justify-center mb-6">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary-gold)" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <h4 class="font-bold text-lg mb-2 text-amber">Zero Erro Humano</h4>
+                <p class="text-sm text-white/60 leading-relaxed">O cliente escolhe, o sistema confirma o Pix. Só resta entregar.</p>
+            </div>
+            
+            <div class="premium-card p-8 rounded-xl text-left">
+                <div class="w-12 h-12 bg-amber/10 border border-amber/20 rounded-lg flex items-center justify-center mb-6">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary-gold)" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                </div>
+                <h4 class="font-bold text-lg mb-2 text-amber">Lucro Escalonável</h4>
+                <p class="text-sm text-white/60 leading-relaxed">Venda mais nas horas de pico sem precisar contratar mais atendentes.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Final -->
+    <section class="py-24 px-4 border-t border-white/5">
+        <div class="max-w-4xl mx-auto glass-effect rounded-3xl p-12 text-center relative overflow-hidden">
+            <h2 class="text-4xl font-extrabold mb-6 uppercase">Você não muda seu negócio.</h2>
+            <p class="text-2xl text-amber font-bold mb-8 italic">“Só elimina o gargalo.”</p>
+            
+            <div class="flex flex-col items-center gap-6">
+                <button class="btn-gold text-black font-extrabold px-12 py-6 rounded-lg text-2xl btn-hover transition-all w-full md:w-auto uppercase">
+                    Quero modernizar agora
+                </button>
+                <p class="text-sm text-white/40 tracking-widest uppercase">Sem mensalidade fixa • Simples de operar</p>
+            </div>
+            
+            <!-- Badge estilizado com a logo do Alambique -->
+            <div class="mt-12 flex justify-center">
+                <div class="w-32 h-32 border-2 border-dashed border-amber/30 rounded-full flex items-center justify-center rotate-12 relative">
+                    <div class="absolute inset-0 flex items-center justify-center animate-spin-slow" style="animation: spin 15s linear infinite;">
+                        <svg viewBox="0 0 100 100" class="w-24 h-24">
+                            <path id="circlePath" fill="none" d="M 10, 50 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" />
+                            <text class="fill-amber text-[7px] font-bold tracking-[0.2em] uppercase">
+                                <textPath xlink:href="#circlePath">ALAMBIQUE EXPRESS • PAGO E RESERVADO • </textPath>
+                            </text>
+                        </svg>
+                    </div>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="var(--primary-gold)">
+                        <path d="M12 2C10.3 2 9 3.3 9 5V6.1C6.7 7.1 5 9.3 5 12V17L3 19V20H21V19L19 17V12C19 9.3 17.3 7.1 15 6.1V5C15 3.3 13.7 2 12 2ZM12 22C13.1 22 14 21.1 14 20H10C10 21.1 10.9 22 12 22Z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-4 border-t border-white/5 text-center text-white/30 text-xs">
+        <p>&copy; 2024 Alambique Express System. Rapidez + Tradição.</p>
+    </footer>
+
+    <style>
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+
+</body>
+</html>
