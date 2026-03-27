@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alambique Express | Demo Interativa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #0D0D0D; color: #FFFFFF; overflow-x: hidden; }
+        .amber-text { color: #C68A2B; }
+        .amber-bg { background-color: #C68A2B; }
+        .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .btn-primary { background-color: #C68A2B; color: #000; font-weight: 700; transition: all 0.3s ease; }
+        .btn-primary:hover { background-color: #a37123; transform: translateY(-2px); }
+        .status-badge { padding: 2px 8px; rounded: 4px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
+        .hidden { display: none; }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0d0d0d; }
+        ::-webkit-scrollbar-thumb { background: #C68A2B; border-radius: 10px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Navegação de Modo (Apenas para Demo) -->
+    <nav class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex bg-zinc-900 border border-zinc-800 p-1 rounded-full shadow-2xl">
+        <button onclick="switchMode('customer')" id="btn-mode-customer" class="px-6 py-2 rounded-full text-sm font-bold transition-all amber-bg text-black">
+            Modo Cliente
+        </button>
+        <button onclick="switchMode('manager')" id="btn-mode-manager" class="px-6 py-2 rounded-full text-sm font-bold transition-all text-gray-400">
+            Modo Gerente
+        </button>
+    </nav>
+
+    <!-- UI CLIENTE -->
+    <div id="view-customer" class="flex-1 flex flex-col items-center p-4 pb-24">
+        <header class="w-full max-w-md flex flex-col items-center py-8">
+            <div class="w-16 h-16 mb-4 flex items-center justify-center rounded-full border-2 border-[#C68A2B]">
+                <svg class="w-8 h-8 amber-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2L8 6V18L12 22L16 18V6L12 2Z"></path>
+                </svg>
+            </div>
+            <h1 class="text-3xl font-bold tracking-tight uppercase">Alambique <span class="amber-text">Express</span></h1>
+            <p class="text-gray-400 text-sm">Reserva Premium & Retirada Agilizada</p>
+        </header>
+
+        <main class="w-full max-w-md">
+            <!-- Seleção -->
+            <section id="c-step-selection" class="glass-card rounded-3xl p-6 mb-6">
+                <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
+                    <span class="w-1.5 h-6 amber-bg block rounded-full"></span>
+                    Rótulos Disponíveis
+                </h2>
+                <div class="space-y-4">
+                    <div onclick="selectProductSim('Extra Premium 12 anos', 120.00)" class="p-4 rounded-2xl border border-zinc-800 hover:border-amber-600 transition-all cursor-pointer group">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold group-hover:amber-text transition-colors">Extra Premium 12 anos</h3>
+                                <p class="text-xs text-gray-500">Envelhecida em barris de carvalho francês.</p>
+                            </div>
+                            <span class="amber-text font-bold">R$ 120</span>
+                        </div>
+                    </div>
+                    <div onclick="selectProductSim('Prata Artesanal', 65.00)" class="p-4 rounded-2xl border border-zinc-800 hover:border-amber-600 transition-all cursor-pointer group">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold group-hover:amber-text transition-colors">Prata Artesanal</h3>
+                                <p class="text-xs text-gray-500">Pureza cristalina, destilada em cobre.</p>
+                            </div>
+                            <span class="amber-text font-bold">R$ 65</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Checkout -->
+            <section id="c-step-form" class="glass-card rounded-3xl p-6 mb-6 hidden">
+                <button onclick="showStep('selection')" class="text-xs text-gray-500 mb-4 flex items-center gap-1">← Voltar</button>
+                <h2 class="text-xl font-semibold mb-4">Finalizar Reserva</h2>
+                <div class="bg-black/40 p-4 rounded-xl mb-6">
+                    <p class="text-xs text-gray-500 uppercase tracking-widest">Item selecionado</p>
+                    <p id="c-display-product" class="font-bold"></p>
+                    <p id="c-display-price" class="amber-text text-sm"></p>
+                </div>
+                <label class="block text-xs text-gray-500 mb-1 ml-1 uppercase">Seu Nome</label>
+                <input type="text" id="c-input-name" placeholder="Ex: João Silva" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-4 mb-6 focus:border-amber-600 outline-none text-white">
+                <button onclick="startSimulatedPayment()" class="w-full btn-primary py-4 rounded-xl shadow-lg shadow-amber-900/20">RESERVAR COM PIX</button>
+            </section>
+
+            <!-- Pagamento -->
+            <section id="c-step-pay" class="glass-card rounded-3xl p-6 mb-6 hidden flex flex-col items-center">
+                <h2 class="text-lg font-semibold mb-6">Aguardando Pagamento...</h2>
+                <div class="bg-white p-3 rounded-2xl mb-6 relative">
+                    <div id="payment-overlay" class="absolute inset-0 bg-white/90 flex flex-col items-center justify-center rounded-2xl hidden">
+                        <div class="w-12 h-12 border-4 border-amber-600 border-t-transparent rounded-full animate-spin mb-2"></div>
+                        <p class="text-black text-xs font-bold uppercase">Validando...</p>
+                    </div>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=ALAMBIQUE_EXPRESS_DEMO_PIX_PAYMENT" class="w-48 h-48" alt="QR Code">
+                </div>
+                <p class="text-[10px] text-gray-500 uppercase mb-2">Código Copia e Cola</p>
+                <div class="w-full bg-black/50 p-3 rounded-lg text-[10px] font-mono text-zinc-500 break-all border border-zinc-800 mb-6">
+                    00020126580014BR.GOV.BCB.PIX0136demo-alambique-express-uuid-123456789
+                </div>
+                <div class="flex items-center gap-3 text-xs text-zinc-400">
+                    <div class="w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
+                    Detectando transferência em tempo real
+                </div>
+            </section>
+
+            <!-- Sucesso -->
+            <section id="c-step-success" class="glass-card rounded-3xl p-8 mb-6 hidden text-center border-t-4 border-green-600">
+                <div class="w-20 h-20 bg-green-600/20 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold mb-2">Reserva Confirmada!</h2>
+                <p class="text-zinc-400 text-sm mb-8">Seu pedido já foi enviado ao balcão e está sendo preparado.</p>
+                
+                <div class="bg-zinc-900 rounded-2xl p-6 border border-zinc-800">
+                    <span class="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold">Código de Retirada</span>
+                    <div id="c-success-code" class="text-5xl font-black amber-text mt-2 tracking-tighter">-----</div>
+                </div>
+                
+                <button onclick="location.reload()" class="mt-8 text-xs text-zinc-500 hover:text-white underline transition-colors">Fazer nova reserva</button>
+            </section>
+        </main>
+    </div>
+
+    <!-- UI GERENTE -->
+    <div id="view-manager" class="flex-1 flex flex-col p-6 hidden max-w-5xl mx-auto w-full pb-24">
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <div>
+                <h1 class="text-2xl font-bold">Painel de <span class="amber-text">Controle</span></h1>
+                <p class="text-zinc-500 text-sm">Gerenciamento de pedidos e retiradas.</p>
+            </div>
+            <div class="flex gap-4">
+                <div class="glass-card px-4 py-2 rounded-xl text-center">
+                    <p class="text-[10px] text-zinc-500 uppercase">Vendas Hoje</p>
+                    <p id="m-stat-total" class="text-xl font-bold amber-text">R$ 0,00</p>
+                </div>
+                <div class="glass-card px-4 py-2 rounded-xl text-center">
+                    <p class="text-[10px] text-zinc-500 uppercase">Aguardando</p>
+                    <p id="m-stat-pending" class="text-xl font-bold text-white">0</p>
+                </div>
+            </div>
+        </header>
+
+        <section class="glass-card rounded-3xl overflow-hidden flex-1 flex flex-col">
+            <div class="p-6 border-b border-zinc-800 flex justify-between items-center bg-zinc-900/50">
+                <h2 class="font-bold">Pedidos Recentes</h2>
+                <span class="text-xs text-green-500 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                    Live
+                </span>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="text-[10px] uppercase text-zinc-500 border-b border-zinc-800">
+                            <th class="px-6 py-4">Cliente / Produto</th>
+                            <th class="px-6 py-4">Valor</th>
+                            <th class="px-6 py-4">Status</th>
+                            <th class="px-6 py-4">Cód. Retirada</th>
+                            <th class="px-6 py-4">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="m-order-list">
+                        <!-- Pedidos serão inseridos aqui -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div id="m-empty-state" class="flex-1 flex flex-col items-center justify-center p-12 text-zinc-600 hidden">
+                <svg class="w-12 h-12 mb-4 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                </svg>
+                <p>Nenhum pedido realizado ainda.</p>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // ESTADO GLOBAL DA SIMULAÇÃO
+        let orders = [
+            { id: 'ALB-1001', customer: 'Ricardo Oliveira', product: 'Extra Premium 12 anos', price: 120.00, status: 'PAGO', code: 'XP-92', time: '10:15' },
+            { id: 'ALB-1002', customer: 'Mariana Costa', product: 'Prata Artesanal', price: 65.00, status: 'RETIRADO', code: 'PR-14', time: '09:40' }
+        ];
+
+        let currentSelection = { product: '', price: 0 };
+
+        // NAVEGAÇÃO
+        function switchMode(mode) {
+            const isCustomer = mode === 'customer';
+            document.getElementById('view-customer').classList.toggle('hidden', !isCustomer);
+            document.getElementById('view-manager').classList.toggle('hidden', isCustomer);
+            
+            document.getElementById('btn-mode-customer').classList.toggle('amber-bg', isCustomer);
+            document.getElementById('btn-mode-customer').classList.toggle('text-black', isCustomer);
+            document.getElementById('btn-mode-customer').classList.toggle('text-gray-400', !isCustomer);
+
+            document.getElementById('btn-mode-manager').classList.toggle('amber-bg', !isCustomer);
+            document.getElementById('btn-mode-manager').classList.toggle('text-black', !isCustomer);
+            document.getElementById('btn-mode-manager').classList.toggle('text-gray-400', isCustomer);
+
+            if(!isCustomer) renderManager();
+        }
+
+        function showStep(step) {
+            ['selection', 'form', 'pay', 'success'].forEach(s => {
+                document.getElementById(`c-step-${s}`).classList.add('hidden');
+            });
+            document.getElementById(`c-step-${step}`).classList.remove('hidden');
+        }
+
+        // LOGICA CLIENTE
+        function selectProductSim(name, price) {
+            currentSelection = { product: name, price: price };
+            document.getElementById('c-display-product').innerText = name;
+            document.getElementById('c-display-price').innerText = `R$ ${price.toFixed(2)}`;
+            showStep('form');
+        }
+
+        function startSimulatedPayment() {
+            const name = document.getElementById('c-input-name').value;
+            if(!name) return alert("Por favor, digite seu nome.");
+            
+            showStep('pay');
+
+            // Simula o tempo que o usuário leva para pagar e o webhook confirmar
+            setTimeout(() => {
+                document.getElementById('payment-overlay').classList.remove('hidden');
+                
+                setTimeout(() => {
+                    const newCode = Math.random().toString(36).substring(2, 6).toUpperCase() + "-" + Math.floor(Math.random()*99);
+                    const newOrder = {
+                        id: 'ALB-' + (orders.length + 1001),
+                        customer: name,
+                        product: currentSelection.product,
+                        price: currentSelection.price,
+                        status: 'PAGO',
+                        code: newCode,
+                        time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                    };
+                    orders.unshift(newOrder); // Adiciona no topo
+                    
+                    document.getElementById('c-success-code').innerText = newCode;
+                    showStep('success');
+                }, 2000);
+            }, 4000);
+        }
+
+        // LOGICA GERENTE
+        function renderManager() {
+            const list = document.getElementById('m-order-list');
+            const empty = document.getElementById('m-empty-state');
+            
+            if(orders.length === 0) {
+                list.innerHTML = '';
+                empty.classList.remove('hidden');
+                return;
+            }
+
+            empty.classList.add('hidden');
+            list.innerHTML = orders.map((order, index) => `
+                <tr class="border-b border-zinc-800/50 hover:bg-white/[0.02] transition-colors">
+                    <td class="px-6 py-4">
+                        <p class="font-bold text-sm">${order.customer}</p>
+                        <p class="text-[10px] text-zinc-500">${order.product}</p>
+                    </td>
+                    <td class="px-6 py-4 text-sm font-medium">R$ ${order.price.toFixed(2)}</td>
+                    <td class="px-6 py-4">
+                        <span class="status-badge ${order.status === 'PAGO' ? 'bg-green-900/30 text-green-500' : 'bg-zinc-800 text-zinc-500'}">
+                            ${order.status}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 font-mono text-amber-500 font-bold">${order.code}</td>
+                    <td class="px-6 py-4">
+                        ${order.status === 'PAGO' ? 
+                            `<button onclick="deliverOrder(${index})" class="text-[10px] bg-white text-black px-3 py-1 rounded-full font-bold hover:bg-amber-500 transition-colors">DAR BAIXA</button>` : 
+                            `<span class="text-[10px] text-zinc-600">CONCLUÍDO</span>`
+                        }
+                    </td>
+                </tr>
+            `).join('');
+
+            // Atualizar Stats
+            const total = orders.reduce((acc, curr) => acc + curr.price, 0);
+            const pending = orders.filter(o => o.status === 'PAGO').length;
+            
+            document.getElementById('m-stat-total').innerText = `R$ ${total.toFixed(2)}`;
+            document.getElementById('m-stat-pending').innerText = pending;
+        }
+
+        function deliverOrder(index) {
+            orders[index].status = 'RETIRADO';
+            renderManager();
+        }
+
+        // Início
+        window.onload = () => {
+            renderManager();
+        };
+    </script>
+</body>
+</html>
